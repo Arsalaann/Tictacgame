@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="../public/tictac.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    <title>Tictac</title>
+    <script>
+      function isOver(stat){
+        if(stat[0][0]!=='' && ((stat[0][0]===stat[0][1] && stat[0][0]==stat[0][2])
+          || (stat[0][0]===stat[1][0] && stat[0][0]===stat[2][0])
+          || (stat[0][0]===stat[1][1] && stat[0][0]===stat[2][2])))
+          return true;
+        if(stat[1][0]!=='' && stat[1][0]===stat[1][1] && stat[1][0]===stat[1][2])
+          return true;
+        if(stat[2][0]!=='' && (( stat[2][0]===stat[2][1] && stat[2][0]===stat[2][2])
+          || (stat[2][0]===stat[1][1] && stat[2][0]===stat[0][2])))
+          return true;
+        if(stat[2][1]!=='' && stat[2][1]===stat[1][1] && stat[2][1]===stat[0][1])
+          return true;
+        if(stat[2][2]!=='' && stat[2][2]===stat[1][2] && stat[2][2]===stat[0][2])
+          return true;
+        return false;
+      }
+      function set(items,id,now){
+        var tmp=parseInt(id[1])-1;
+            items[parseInt(tmp/3)][tmp%3]=now;
+      }
+      function isFullyFilled(stat){
+        for(var i=0;i<=2;i++){
+          for(var j=0;j<=2;j++)
+            if(stat[i][j]==='')
+              return false;
+        }
+        return true;
+      }
+      function showAlert(now=""){
+        if(now)
+          document.getElementById('win-alert').innerHTML="Player "+now+" wins....";
+        else
+          document.getElementById('win-alert').innerHTML="oops! it's a draw...try again";
+        $('#my-alert').css('display', 'block');
+        $('#reset').css('display', 'block');
+      }
+      function decorate(id,now){
+        var clm="c"+id[1];
+        if(now==='X'){
+          document.getElementById(clm).style.backgroundColor="black";
+          document.getElementById(id).innerHTML="<span style='color: white;'>"+now+"</span>";
+        }else{
+          document.getElementById(clm).style.backgroundColor="white";
+          if(now)
+            document.getElementById(id).innerHTML="<span style='color: black;'>"+now+"</span>";
+        }
+      }
+    </script>
+    <script>
+      var now='X';
+      var last='';
+      var isLastFilled=true;
+      var is_over=false;
+      var items=[['','',''],
+                 ['','',''], 
+                 ['','','']];
+      function fun(id){
+        if(is_over)
+          return;
+        var data=document.getElementById(id).innerHTML;
+        if(!data){
+          if(last===id){
+            now=now==='O'?'X':'O';
+            decorate(id,now);
+            set(items,id,now);
+          }else{
+            if(!isLastFilled)
+              now=now==='O'?'X':'O';
+            decorate(id,now);
+            last=id;
+            set(items,id,now);
+          }
+          now=now==='O'?'X':'O';
+          isLastFilled=true;
+        }else if(last===id && data){
+          document.getElementById(id).innerHTML='';
+          decorate(id)
+          set(items,id,"");
+          isLastFilled=false;
+        }
+        if(isOver(items)){
+          showAlert(now==='O'?'X':'O');
+          is_over=true;
+        }
+        if(isFullyFilled(items) && !is_over){
+          showAlert();
+          is_over=true;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light py-0 mb-3">
+      <div class="container-fluid">
+        <a href="./index.html"><button type="button" class="btn btn-outline-success p-1 px-2">Home</button></a>
+        <a class="navbar-brand mx-auto font-monospace fw-bolder" href="#">W  e  l  c  o  m  e</a>
+      </div>
+    </nav> 
+  <div class="container p-0 my-2">
+      <div class="alert alert-success pb-1 pt-1"  id="my-alert" style="display:none;">
+        <div class="d-flex align-items-center flex-column">
+          <h4 id="win-alert"></h4>
+        </div>
+          <div class="d-flex align-items-center flex-column">
+            <button onclick='location.reload()' style="display:none;width:30%" id="reset" type="button" class="btn btn-success">Reset</button>
+          </div>
+      </div>
+    <div class="row">
+      <div class="col  col-sm-4" id="c1" onclick="fun('p1')">
+        <h1 class="display-1 fw-bolder" id="p1"></h1>
+      </div>
+      <div class="col  col-sm-4" id="c2" onclick="fun('p2')">
+        <h1 class="display-1 fw-bolder" id="p2"></h1>
+      </div>
+      <div class="col  col-sm-4" id="c3" onclick="fun('p3')">
+        <h1 class="display-1 fw-bolder" id="p3"></h1>
+      </div>
+      <div class="col  col-sm-4" id="c4" onclick="fun('p4')">
+        <h1 class="display-1 fw-bolder" id="p4"></h1>
+      </div>
+      <div class="col  col-sm-4" id="c5" onclick="fun('p5')">
+        <h1 class="display-1 fw-bolder" id="p5"></h1>
+      </div>
+      <div class="col  col-sm-4" id="c6" onclick="fun('p6')">
+        <h1 class="display-1 fw-bolder" id="p6"></h1>
+      </div>
+      <div class="col  col-sm-4" id="c7"d="c7" onclick="fun('p7')">
+        <h1 class="display-1 fw-bolder" id="p7"></h1>
+      </div>
+      <div class="col  col-sm-4" id="c8" onclick="fun('p8')">
+        <h1 class="display-1 fw-bolder" id="p8"></h1>
+      </div>
+      <div class="col  col-sm-4" id="c9" onclick="fun('p9')">
+        <h1 class="display-1 fw-bolder" id="p9"></h1>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
