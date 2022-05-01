@@ -1,0 +1,12 @@
+.container{
+    max-width: 50%;
+}
+.cf{
+    border: 7px solid #ff0404;
+}
+.col{
+    border: 7px solid #5a5454;
+    height: 220px;
+    padding-left: 70px;
+    padding-top: 10px;
+}
